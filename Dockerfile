@@ -13,7 +13,7 @@ RUN apk update && apk add --no-cache \
 	pcre-dev \
 	bison \
 	flex \
-	daq \
+	daq-dev \
 	net-tools \
 	wget \
 	zlib-dev \
