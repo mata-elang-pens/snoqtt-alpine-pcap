@@ -8,10 +8,10 @@ COPY require /root
 
 RUN apk update && apk add --no-cache \
 	alpine-sdk \
+	linux-headers \
 	libpcap-dev \
 	libdnet-dev \
-	libnsl-dev \
-	libtirpc-dev \
+	musl-dev \
 	pcre-dev \
 	bison \
 	flex \
@@ -23,6 +23,7 @@ RUN apk update && apk add --no-cache \
 	python3-dev \
 	sed \
 	tar \
+	busybox \
 	perl-net-ssleay \
 	perl-lwp-useragent-determined &&\
 
