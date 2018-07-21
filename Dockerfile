@@ -1,7 +1,7 @@
+FROM alpine:latest
 ARG PROTECTED_SUBNET
 ARG EXTERNAL_SUBNET
 ARG OINKCODE
-FROM alpine:latest
 
 # Instalasi package yang diperlukan melalui apt
 COPY require /root
