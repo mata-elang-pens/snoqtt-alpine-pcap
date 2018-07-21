@@ -29,6 +29,7 @@ RUN apk update && apk add --no-cache \
 	make \
 	g++ \
 	busybox \
+	shadow \
 	perl-net-ssleay \
 	perl-lwp-useragent-determined \
 	perl-lwp-protocol-https \
