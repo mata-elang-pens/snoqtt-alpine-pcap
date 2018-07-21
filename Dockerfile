@@ -9,8 +9,7 @@ COPY require /root
 RUN apk update && apk add --no-cache \
 	alpine-sdk \
 	libpcap-dev \
-	libpcre3-dev \
-	libdumbnet-dev \
+	pcre-dev \
 	bison \
 	flex \
 	net-tools \
@@ -18,7 +17,6 @@ RUN apk update && apk add --no-cache \
 	zlib-dev \
 	supervisor \
 	python3-dev \
-	python3-pip \
 	sed \
 	tar \
 	perl-net-ssleay \
