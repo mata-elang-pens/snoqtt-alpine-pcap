@@ -23,10 +23,20 @@ RUN apk update && apk add --no-cache \
 	python3-dev \
 	sed \
 	tar \
+	libtirpc-dev \
+	libressl-dev \
+	cmake \
+	make \
+	g++ \
 	busybox \
 	perl-net-ssleay \
-	perl-lwp-useragent-determined &&\
+	perl-lwp-useragent-determined \
+	perl-lwp-protocol-https \
+	perl-libwww \
+	perl-crypt-ssleay &&\
 
+	ln -s /usr/include/tirpc/rpc /usr/include/rpc &&\
+	ln -s /usr/include/tirpc/netconfig.h /usr/include/netconfig.h &&\
 # File requirement yang dibutuhkan package python untuk menjalankan snort
 
 	pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
