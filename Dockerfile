@@ -102,8 +102,8 @@ RUN apk update && apk add --no-cache \
 # Lakukan edit konfigurasi yang dibutuhkan pada file /etc/snort/snort.conf
 
 	sed -i \
-	-e 's@^ipvar HOME_NET.*@ipvar HOME_NET '"${PROTECTED_SUBNET}"'@' \
-	-e 's@^ipvar EXTERNAL_NET.*@ipvar EXTERNAL_NET '"${EXTERNAL_SUBNET}"'@' \
+	-e "s@^ipvar HOME_NET.*@ipvar HOME_NET $PROTECTED_SUBNET@" \
+	-e "s@^ipvar EXTERNAL_NET.*@ipvar EXTERNAL_NET $EXTERNAL_SUBNET@" \
 	-e 's@^var RULE_PATH.*@var RULE_PATH /etc/snort/rules@' \
 	-e 's@^var SO_RULE_PATH.*@var SO_RULE_PATH /etc/snort/so_rules@' \
 	-e 's@^var PREPROC_RULE_PATH.*@var PREPROCRULE_PATH /etc/snort/preproc_rules@' \
@@ -121,7 +121,7 @@ RUN apk update && apk add --no-cache \
 	cp /root/pulledpork_src/etc/*.conf /etc/snort &&\
 	cp /root/pulledpork.conf /etc/snort &&\
 
-	sed -i 's@.oinkcode.@'"${OINKCODE}"'@' /etc/snort/pulledpork.conf &&\
+	sed -i "s@.oinkcode.@$OINKCODE@" /etc/snort/pulledpork.conf &&\
 
 	/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l &&\
 	snort -T -c /etc/snort/snort.conf &&\
