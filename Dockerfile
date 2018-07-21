@@ -12,6 +12,7 @@ RUN apk update && apk add --no-cache \
 	pcre-dev \
 	bison \
 	flex \
+	daq \
 	net-tools \
 	wget \
 	zlib-dev \
@@ -31,15 +32,8 @@ RUN apk update && apk add --no-cache \
 # Membuat direktori untuk source file daq, snort dan pulledpork
 
 	mkdir -p /root/snort_src && \
-	mkdir -p /root/daq_src && \
 	mkdir -p /root/pulledpork_src &&\
 	cd /root &&\
-
-# Download source daq dan simpan pada directory ~/daq_src
-	
-	wget https://www.snort.org/downloads/snort/daq-2.0.6.tar.gz -O daq.tar.gz &&\
-	tar -xvzf daq.tar.gz --strip-components=1 -C /root/daq_src &&\
-	rm daq.tar.gz &&\
 
 # Download source snort dan simpan pada directory ~/daq_src
 
@@ -52,13 +46,6 @@ RUN apk update && apk add --no-cache \
 	wget https://github.com/shirkdog/pulledpork/archive/v0.7.3.tar.gz -O pulledpork.tar.gz &&\
 	tar -xvzf pulledpork.tar.gz --strip-components=1 -C /root/pulledpork_src &&\
 	rm pulledpork.tar.gz &&\
-
-# Compile source code dari daq terlebih dahulu
-
-	cd /root/daq_src && \
-	./configure && \
-	make && \
-	make install &&\
 
 # Compile source code dari snort selanjutnya
 
@@ -128,7 +115,7 @@ RUN apk update && apk add --no-cache \
 	sed -i '/import alert/c\import snortunsock.alert as alert' /usr/local/lib/python3.5/dist-packages/snortunsock/snort_listener.py &&\
 
 # Cleanup
-	rm -rf /root/snort_src /root/daq_src /root/pulledpork_src /root/requirements.txt /root/pulledpork.conf &&\
+	rm -rf /root/snort_src /root/pulledpork_src /root/requirements.txt /root/pulledpork.conf &&\
 	apk del net-tools wget
 
 EXPOSE 5000
