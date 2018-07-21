@@ -73,8 +73,8 @@ RUN apk update && apk add --no-cache \
 
 # Tambahkan username, user dan group dengan nama "snort"
 
-	groupadd snort && \
-	useradd snort -r -s /sbin/nologin -c SNORT_IDS -g snort &&\
+	addgroup -S snort && \
+	adduser -S snort -s /sbin/nologin -g snort &&\
 
 # Buat direktori kerja snort
 
