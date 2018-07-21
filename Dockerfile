@@ -10,6 +10,7 @@ RUN apk update && apk add --no-cache \
 	alpine-sdk \
 	libpcap-dev \
 	libdnet-dev \
+	libtirpc-dev \
 	pcre-dev \
 	bison \
 	flex \
