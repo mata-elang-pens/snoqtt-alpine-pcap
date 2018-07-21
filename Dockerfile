@@ -9,7 +9,7 @@ COPY require /root
 RUN apk update && apk add --no-cache \
 	alpine-sdk \
 	libpcap-dev \
-	libdnet \
+	libdnet-dev \
 	pcre-dev \
 	bison \
 	flex \
