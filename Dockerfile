@@ -7,8 +7,7 @@ FROM alpine:latest
 COPY require /root
 
 RUN apk update && apk add --no-cache \
-	apt-utils \
-	build-essential \
+	alpine-sdk \
 	libpcap-dev \
 	libpcre3-dev \
 	libdumbnet-dev \
@@ -16,14 +15,14 @@ RUN apk update && apk add --no-cache \
 	flex \
 	net-tools \
 	wget \
-	zlib1g-dev \
+	zlib-dev \
 	supervisor \
 	python3-dev \
 	python3-pip \
 	sed \
 	tar \
-	libcrypt-ssleay-perl \
-	liblwp-useragent-determined-perl &&\
+	perl-net-ssleay \
+	perl-lwp-useragent-determined &&\
 
 # File requirement yang dibutuhkan package python untuk menjalankan snort
 
