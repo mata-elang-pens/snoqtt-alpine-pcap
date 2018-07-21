@@ -65,16 +65,15 @@ RUN apk update && apk add --no-cache \
 # Compile source code dari snort selanjutnya
 
 	cd /root/snort_src && \
-	./configure --enable-sourcefire --enable-reload && \
+	./configure --enable-sourcefire && \
 	make && \
 	make install && \
-	ldconfig && \
 	ln -s /usr/local/bin/snort /usr/sbin/snort &&\
 
 # Tambahkan username, user dan group dengan nama "snort"
 
 	addgroup -S snort && \
-	adduser -S snort -s /sbin/nologin -g snort &&\
+	adduser -S snort -g snort &&\
 
 # Buat direktori kerja snort
 
