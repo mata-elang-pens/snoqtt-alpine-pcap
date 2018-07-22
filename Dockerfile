@@ -126,6 +126,8 @@ RUN apk update && apk add --no-cache \
 	/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l &&\
 	snort -T -c /etc/snort/snort.conf &&\
 
+	sed -i '/import alert/c\import snortunsock.alert as alert' /usr/lib/python3.6/site-packages/snortunsock/snort_listener.py &&\
+
 # Cleanup
 	rm -rf /root/snort_src /root/pulledpork_src /root/requirements.txt /root/pulledpork.conf &&\
 	apk del net-tools wget
