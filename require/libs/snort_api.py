@@ -80,6 +80,17 @@ def snort_restart():
         restart['restart_successful'] = restart_success
         return jsonify(restart), 500
 
+def snort_check():
+    service = "snort"
+    running = is_running(service)
+    if running:
+        status = super_server.supervisor.getProcessInfo(service)
+        status['running'] = True
+        return jsonify(status), 202
+    else:
+        status = super_server.supervisor.getProcessInfo(service)
+        status['running'] = False
+        return jsonify(status), 500 
 
 def pp_json_elements(some_json):
     required = ["name", "protocol", "source_ip", "source_port", "dest_ip", "dest_port", "msg", "sid", "rule_type"]
@@ -120,6 +131,11 @@ def norm_values(snort_json):
         snort_json["dest_port"] = str(snort_json["dest_port"])
 
     return snort_json
+
+@app.route('/snort/api/v0.1/checkstatus', methods=['GET'])
+def snort_check_status():
+    status = snort_check()
+    return status
 
 
 @app.route('/snort/api/v0.1/restartsnort', methods=['GET'])
