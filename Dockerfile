@@ -1,30 +1,43 @@
+FROM alpine:latest
 ARG PROTECTED_SUBNET
 ARG EXTERNAL_SUBNET
 ARG OINKCODE
-FROM alpine:latest
 
 # Instalasi package yang diperlukan melalui apt
 COPY require /root
 
 RUN apk update && apk add --no-cache \
-	apt-utils \
-	build-essential \
+	alpine-sdk \
+	linux-headers \
 	libpcap-dev \
-	libpcre3-dev \
-	libdumbnet-dev \
+	libdnet-dev \
+	musl-dev \
+	pcre-dev \
 	bison \
 	flex \
+	daq-dev \
 	net-tools \
 	wget \
-	zlib1g-dev \
+	zlib-dev \
 	supervisor \
 	python3-dev \
-	python3-pip \
 	sed \
 	tar \
-	libcrypt-ssleay-perl \
-	liblwp-useragent-determined-perl &&\
+	libtirpc-dev \
+	libressl-dev \
+	cmake \
+	make \
+	g++ \
+	busybox \
+	shadow \
+	perl-net-ssleay \
+	perl-lwp-useragent-determined \
+	perl-lwp-protocol-https \
+	perl-libwww \
+	perl-crypt-ssleay &&\
 
+	ln -s /usr/include/tirpc/rpc /usr/include/rpc &&\
+	ln -s /usr/include/tirpc/netconfig.h /usr/include/netconfig.h &&\
 # File requirement yang dibutuhkan package python untuk menjalankan snort
 
 	pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
@@ -34,15 +47,8 @@ RUN apk update && apk add --no-cache \
 # Membuat direktori untuk source file daq, snort dan pulledpork
 
 	mkdir -p /root/snort_src && \
-	mkdir -p /root/daq_src && \
 	mkdir -p /root/pulledpork_src &&\
 	cd /root &&\
-
-# Download source daq dan simpan pada directory ~/daq_src
-	
-	wget https://www.snort.org/downloads/snort/daq-2.0.6.tar.gz -O daq.tar.gz &&\
-	tar -xvzf daq.tar.gz --strip-components=1 -C /root/daq_src &&\
-	rm daq.tar.gz &&\
 
 # Download source snort dan simpan pada directory ~/daq_src
 
@@ -56,26 +62,18 @@ RUN apk update && apk add --no-cache \
 	tar -xvzf pulledpork.tar.gz --strip-components=1 -C /root/pulledpork_src &&\
 	rm pulledpork.tar.gz &&\
 
-# Compile source code dari daq terlebih dahulu
-
-	cd /root/daq_src && \
-	./configure && \
-	make && \
-	make install &&\
-
 # Compile source code dari snort selanjutnya
 
 	cd /root/snort_src && \
-	./configure --enable-sourcefire --enable-reload && \
+	./configure --enable-sourcefire && \
 	make && \
 	make install && \
-	ldconfig && \
 	ln -s /usr/local/bin/snort /usr/sbin/snort &&\
 
 # Tambahkan username, user dan group dengan nama "snort"
 
-	groupadd snort && \
-	useradd snort -r -s /sbin/nologin -c SNORT_IDS -g snort &&\
+	addgroup -S snort && \
+	adduser -S snort -g snort &&\
 
 # Buat direktori kerja snort
 
@@ -128,10 +126,10 @@ RUN apk update && apk add --no-cache \
 	/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l &&\
 	snort -T -c /etc/snort/snort.conf &&\
 
-	sed -i '/import alert/c\import snortunsock.alert as alert' /usr/local/lib/python3.5/dist-packages/snortunsock/snort_listener.py &&\
+	sed -i '/import alert/c\import snortunsock.alert as alert' /usr/lib/python3.6/site-packages/snortunsock/snort_listener.py &&\
 
 # Cleanup
-	rm -rf /root/snort_src /root/daq_src /root/pulledpork_src /root/requirements.txt /root/pulledpork.conf &&\
+	rm -rf /root/snort_src /root/pulledpork_src /root/requirements.txt /root/pulledpork.conf &&\
 	apk del net-tools wget
 
 EXPOSE 5000
