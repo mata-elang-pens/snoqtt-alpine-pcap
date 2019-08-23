@@ -6,7 +6,9 @@ ARG OINKCODE
 # Instalasi package yang diperlukan melalui apt
 COPY require /root
 
-RUN apk update && apk add --no-cache \
+RUN apk update 
+RUN apk add --no-cache \
+	build-base \
 	alpine-sdk \
 	linux-headers \
 	libpcap-dev \
@@ -34,50 +36,65 @@ RUN apk update && apk add --no-cache \
 	perl-lwp-useragent-determined \
 	perl-lwp-protocol-https \
 	perl-libwww \
-	perl-crypt-ssleay &&\
-
-	ln -s /usr/include/tirpc/rpc /usr/include/rpc &&\
-	ln -s /usr/include/tirpc/netconfig.h /usr/include/netconfig.h &&\
+	perl-crypt-ssleay
+# 
+RUN ln -s /usr/include/tirpc/rpc /usr/include/rpc && \
+	ln -s /usr/include/tirpc/netconfig.h /usr/include/netconfig.h
 # File requirement yang dibutuhkan package python untuk menjalankan snort
-
-	pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
-	hash -r pip && \
-	pip3 install --no-cache-dir -r /root/requirements.txt &&\
-
+#
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel
+RUN hash -r pip
+RUN pip3 install --no-cache-dir -r /root/requirements.txt
+#
 # Membuat direktori untuk source file daq, snort dan pulledpork
-
-	mkdir -p /root/snort_src && \
+#
+RUN mkdir -p /root/snort_src && \
+	mkdir -p /root/daq_src &&\
 	mkdir -p /root/pulledpork_src &&\
-	cd /root &&\
-
+	cd /root
+#
 # Download source snort dan simpan pada directory ~/daq_src
-
-	wget https://www.snort.org/downloads/snort/snort-2.9.11.1.tar.gz -O snort.tar.gz &&\
+#
+RUN wget https://www.snort.org/downloads/snort/snort-2.9.14.1.tar.gz -O snort.tar.gz &&\
 	tar -xvzf snort.tar.gz --strip-components=1 -C /root/snort_src &&\
-	rm snort.tar.gz &&\
-
+	rm snort.tar.gz
+#
+# Download source daq dan simpan pada directory ~/daq_src
+#
+RUN wget https://www.snort.org/downloads/snort/daq-2.0.6.tar.gz -O daq.tar.gz && \
+	tar -xvzf daq.tar.gz --strip-components=1 -C /root/daq_src && \
+	rm daq.tar.gz
+#
 # Download source pulledpork dan simpan pada directory ~/daq_src
-
-	wget https://github.com/shirkdog/pulledpork/archive/v0.7.3.tar.gz -O pulledpork.tar.gz &&\
+#
+RUN wget https://github.com/mata-elang-pens/pulledpork/archive/v0.7.3.tar.gz -O pulledpork.tar.gz &&\
 	tar -xvzf pulledpork.tar.gz --strip-components=1 -C /root/pulledpork_src &&\
-	rm pulledpork.tar.gz &&\
-
+	rm pulledpork.tar.gz
+#
+# Compile source code dari daq selanjutnya
+#
+RUN cd /root/daq_src && \
+	echo "#include <unistd.h>" > /usr/include/sys/unistd.h && \
+	./configure && \
+	make && \
+	make install
+#
 # Compile source code dari snort selanjutnya
-
-	cd /root/snort_src && \
-	./configure --enable-sourcefire && \
+#
+RUN cd /root/snort_src && \
+	./configure --enable-sourcefire --disable-open-appid && \
 	make && \
 	make install && \
-	ln -s /usr/local/bin/snort /usr/sbin/snort &&\
-
+	ln -s /usr/local/bin/snort /usr/sbin/snort
+#
 # Tambahkan username, user dan group dengan nama "snort"
-
-	addgroup -S snort && \
-	adduser -S snort -g snort &&\
-
+#
+RUN addgroup -S snort && \
+	adduser -S snort -g snort
+#
 # Buat direktori kerja snort
-
-	mkdir /etc/snort && \
+#
+RUN mkdir /etc/snort && \
 	mkdir /etc/snort/rules && \
 	mkdir /etc/snort/rules/iplists && \
 	mkdir /etc/snort/preproc_rules && \
@@ -97,11 +114,11 @@ RUN apk update && apk add --no-cache \
 	cp /root/snort_src/etc/*.conf* /etc/snort && \
 	cp /root/snort_src/etc/*.map /etc/snort && \
 	cp /root/snort_src/etc/*.dtd /etc/snort && \
-	cp /root/snort_src/src/dynamic-preprocessors/build/usr/local/lib/snort_dynamicpreprocessor/* /usr/local/lib/snort_dynamicpreprocessor/ &&\
-
+	cp /root/snort_src/src/dynamic-preprocessors/build/usr/local/lib/snort_dynamicpreprocessor/* /usr/local/lib/snort_dynamicpreprocessor/
+#
 # Lakukan edit konfigurasi yang dibutuhkan pada file /etc/snort/snort.conf
-
-	sed -i \
+#
+RUN sed -i \
 	-e 's@^ipvar HOME_NET.*@ipvar HOME_NET '"${PROTECTED_SUBNET}"'@' \
 	-e 's@^ipvar EXTERNAL_NET.*@ipvar EXTERNAL_NET '"${EXTERNAL_SUBNET}"'@' \
 	-e 's@^var RULE_PATH.*@var RULE_PATH /etc/snort/rules@' \
@@ -112,24 +129,24 @@ RUN apk update && apk add --no-cache \
 	-e 's@^\(include $.*\)@# \1@' \
 	-e 's@\# include \$RULE\_PATH\/local\.rules@include \$RULE\_PATH\/local\.rules@' \
 	-e '/include \$RULE\_PATH\/local\.rules/a include \$RULE\_PATH\/snort\.rules' \
-		/etc/snort/snort.conf &&\
-
+		/etc/snort/snort.conf
+#
 # Instalasi source pulledpork
-
-	cp /root/pulledpork_src/pulledpork.pl /usr/local/bin && \
+#
+RUN cp /root/pulledpork_src/pulledpork.pl /usr/local/bin && \
 	chmod +x /usr/local/bin/pulledpork.pl &&\
 	cp /root/pulledpork_src/etc/*.conf /etc/snort &&\
-	cp /root/pulledpork.conf /etc/snort &&\
-
-	sed -i 's@.oinkcode.@'"${OINKCODE}"'@' /etc/snort/pulledpork.conf &&\
-
+	cp /root/pulledpork.conf /etc/snort
+#
+RUN sed -i 's@.oinkcode.@'"${OINKCODE}"'@' /etc/snort/pulledpork.conf &&\
+#
 	/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l &&\
 	snort -T -c /etc/snort/snort.conf &&\
-
-	sed -i '/import alert/c\import snortunsock.alert as alert' /usr/lib/python3.6/site-packages/snortunsock/snort_listener.py &&\
-
+#
+	sed -i '/import alert/c\import snortunsock.alert as alert' /usr/lib/python3.6/site-packages/snortunsock/snort_listener.py
+#
 # Cleanup
-	rm -rf /root/snort_src /root/pulledpork_src /root/requirements.txt /root/pulledpork.conf &&\
+RUN rm -rf /root/snort_src /root/pulledpork_src /root/requirements.txt /root/pulledpork.conf &&\
 	apk del net-tools wget
 
 EXPOSE 5000
