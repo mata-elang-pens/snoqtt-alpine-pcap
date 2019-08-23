@@ -48,6 +48,7 @@ RUN pip3 install --no-cache-dir -r /root/requirements.txt
 # Membuat direktori untuk source file daq, snort dan pulledpork
 #
 RUN mkdir -p /root/snort_src && \
+	mkdir -p /root/daq_src &&\
 	mkdir -p /root/pulledpork_src &&\
 	cd /root
 #
