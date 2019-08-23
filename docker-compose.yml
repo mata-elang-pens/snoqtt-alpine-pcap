@@ -6,7 +6,7 @@ services:
       context: ./
       args:
         PROTECTED_SUBNET: "172.17.0.0/16"
-        EXTERNAL_SUBNE: "any"
+        EXTERNAL_SUBNET: "any"
         OINKCODE: "${OINKCODE}"
     env_file:
       - ./.env
