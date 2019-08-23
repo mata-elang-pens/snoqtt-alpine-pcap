@@ -8,6 +8,7 @@ COPY require /root
 
 RUN apk update 
 RUN apk add --no-cache \
+	build-base \
 	alpine-sdk \
 	linux-headers \
 	libpcap-dev \
@@ -72,7 +73,8 @@ RUN wget https://github.com/mata-elang-pens/pulledpork/archive/v0.7.3.tar.gz -O 
 #
 # Compile source code dari daq selanjutnya
 #
-RUN cd /root/snort_src && \
+RUN cd /root/daq_src && \
+	echo "#include <unistd.h>" > /usr/include/sys/unistd.h && \
 	./configure && \
 	make && \
 	make install
