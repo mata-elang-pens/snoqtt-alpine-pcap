@@ -82,7 +82,7 @@ RUN cd /root/daq_src && \
 # Compile source code dari snort selanjutnya
 #
 RUN cd /root/snort_src && \
-	./configure --enable-sourcefire && \
+	./configure --enable-sourcefire --disable-open-appid && \
 	make && \
 	make install && \
 	ln -s /usr/local/bin/snort /usr/sbin/snort
