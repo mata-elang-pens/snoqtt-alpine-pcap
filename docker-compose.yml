@@ -7,7 +7,9 @@ services:
       args:
         PROTECTED_SUBNET: "172.17.0.0/16"
         EXTERNAL_SUBNE: "any"
-        OINKCODE: ""
+        OINKCODE: "${OINKCODE}"
+    env_file:
+      - ./.env
     ports:
       - "5000:5000"
     
