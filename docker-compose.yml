@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  snort:
+    build:
+      context: ./
+      args:
+        PROTECTED_SUBNET: "172.17.0.0/16"
+        EXTERNAL_SUBNE: "any"
+        OINKCODE: ""
+    ports:
+      - "5000:5000"
+    
