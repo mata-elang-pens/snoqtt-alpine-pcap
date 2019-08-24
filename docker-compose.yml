@@ -1,7 +1,7 @@
 version: '3.2'
 
 services:
-  snort:
+  snorqtt-sensor:
     build:
       context: ./
       args:
