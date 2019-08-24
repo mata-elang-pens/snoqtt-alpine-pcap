@@ -5,8 +5,8 @@ services:
     build:
       context: ./
       args:
-        PROTECTED_SUBNET: "172.17.0.0/16"
-        EXTERNAL_SUBNET: "any"
+        PROTECTED_SUBNET: "${PROTECTED_SUBNET}"
+        EXTERNAL_SUBNET: "${EXTERNAL_SUBNET}"
         OINKCODE: "${OINKCODE}"
     env_file:
       - ./.env
