@@ -8,6 +8,7 @@ services:
         PROTECTED_SUBNET: "${PROTECTED_SUBNET}"
         EXTERNAL_SUBNET: "${EXTERNAL_SUBNET}"
         OINKCODE: "${OINKCODE}"
+    image: mataelang/snorqttalpine-sensor:latest
     env_file:
       - ./.env
     ports:
