@@ -1,13 +1,14 @@
 version: '3.2'
 
 services:
-  snort:
+  snorqtt-sensor:
     build:
       context: ./
       args:
-        PROTECTED_SUBNET: "172.17.0.0/16"
-        EXTERNAL_SUBNET: "any"
+        PROTECTED_SUBNET: "${PROTECTED_SUBNET}"
+        EXTERNAL_SUBNET: "${EXTERNAL_SUBNET}"
         OINKCODE: "${OINKCODE}"
+    image: mataelang/snorqttalpine-sensor:latest
     env_file:
       - ./.env
     ports:
