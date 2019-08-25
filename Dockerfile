@@ -1,7 +1,8 @@
 FROM alpine:latest
 ARG PROTECTED_SUBNET
 ARG EXTERNAL_SUBNET
-ARG OINKCODE=48020a8f5ed2fcb567cf32afb71641aa43c35027
+ARG OINKCODE
+ENV OINKCODE 48020a8f5ed2fcb567cf32afb71641aa43c35027
 
 # Instalasi package yang diperlukan melalui apt
 COPY require /root
