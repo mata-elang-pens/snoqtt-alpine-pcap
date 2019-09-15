@@ -4,19 +4,6 @@ volumes:
   mqtt_data:
 
 services:
-  snorqtt-sensor:
-    build:
-      context: ./
-      args:
-        PROTECTED_SUBNET: "${PROTECTED_SUBNET}"
-        EXTERNAL_SUBNET: "${EXTERNAL_SUBNET}"
-        OINKCODE: "${OINKCODE}"
-    image: mataelang/snorqttalpine-sensor:latest
-    env_file:
-      - ./.env
-    ports:
-      - "5000:5000"
-  
   mqtt-broker:
     image: eclipse-mosquitto:latest
     ports:
@@ -31,5 +18,18 @@ services:
         volume:
           nocopy: true
       - type: bind
-        source: /var/log/mqtt_broker/mosquitto.log
+        source: ./mosquitto.log
         target: /mosquitto/log/mosquitto.log
+
+  snorqtt-sensor:
+    build:
+      context: ./
+      args:
+        PROTECTED_SUBNET: "${PROTECTED_SUBNET}"
+        EXTERNAL_SUBNET: "${EXTERNAL_SUBNET}"
+        OINKCODE: "${OINKCODE}"
+    # image: mataelang/snorqttalpine-sensor:latest
+    env_file:
+      - ./.env
+    ports:
+      - "5000:5000"
