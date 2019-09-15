@@ -1,8 +1,4 @@
 FROM alpine:latest
-ARG PROTECTED_SUBNET
-ARG EXTERNAL_SUBNET
-ARG OINKCODE
-ENV OINKCODE 48020a8f5ed2fcb567cf32afb71641aa43c35027
 
 # Instalasi package yang diperlukan melalui apt
 COPY require /root
@@ -116,6 +112,12 @@ RUN mkdir /etc/snort && \
 	cp /root/snort_src/etc/*.map /etc/snort && \
 	cp /root/snort_src/etc/*.dtd /etc/snort && \
 	cp /root/snort_src/src/dynamic-preprocessors/build/usr/local/lib/snort_dynamicpreprocessor/* /usr/local/lib/snort_dynamicpreprocessor/
+#
+# Build Arguments
+#
+ARG PROTECTED_SUBNET
+ARG EXTERNAL_SUBNET
+ARG OINKCODE
 #
 # Lakukan edit konfigurasi yang dibutuhkan pada file /etc/snort/snort.conf
 #
