@@ -23,7 +23,7 @@ services:
         source: ./mosquitto.log
         target: /mosquitto/log/mosquitto.log
 
-  snorqtt-sensor:
+  snort-sensor:
     build:
       context: ./
       args:
