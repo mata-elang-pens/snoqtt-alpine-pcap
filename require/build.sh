@@ -3,46 +3,46 @@
 # Symlink libtirpc
 ln -s /usr/include/tirpc/rpc /usr/include/rpc && ln -s /usr/include/tirpc/netconfig.h /usr/include/netconfig.h
 
-# File requirement yang dibutuhkan package python untuk menjalankan snort
+# Install required python packages
 pip3 install --no-cache-dir --upgrade pip setuptools wheel && hash -r pip && \
 pip3 install --no-cache-dir -r /root/requirements.txt
 
-# Membuat direktori untuk menyimpan berkas sumber
+# Create source code directory
 mkdir -p /root/snort_src && mkdir -p /root/daq_src && mkdir -p /root/pulledpork_src
 
-# Unduh snort
+# Snort download
 wget https://www.snort.org/downloads/snort/snort-2.9.14.1.tar.gz -O /root/snort.tar.gz &&\
 tar -xvzf /root/snort.tar.gz --strip-components=1 -C /root/snort_src &&\
 rm /root/snort.tar.gz
 
-# Unduh Daq
+# DAQ download
 wget https://www.snort.org/downloads/snort/daq-2.0.6.tar.gz -O /root/daq.tar.gz &&\
 tar -xvzf /root/daq.tar.gz --strip-components=1 -C /root/daq_src && \
 rm /root/daq.tar.gz
 
-# Unduh Pulledpork
+# Pulledpork download
 wget https://github.com/mata-elang-pens/pulledpork/archive/v0.7.3.tar.gz -O /root/pulledpork.tar.gz &&\
 tar -xvzf /root/pulledpork.tar.gz --strip-components=1 -C /root/pulledpork_src &&\
 rm /root/pulledpork.tar.gz
 
-# Compile source code dari daq
+# Compile DAQ source code
 cd /root/daq_src && \
 echo "#include <unistd.h>" > /usr/include/sys/unistd.h && \
 ./configure && \
 make && \
 make install
 
-# Compile source code dari snort
+# Compile Snort source code
 cd /root/snort_src && \
 ./configure --enable-sourcefire --disable-open-appid && \
 make && \
 make install && \
 ln -s /usr/local/bin/snort /usr/sbin/snort
 
-# Membuat user dan group snort
+# Create snort user and group
 addgroup -S snort && adduser -S snort -g snort
 
-# Membuat dan mengatur direktori untuk snort
+# Create Snort required directories
 mkdir /etc/snort && \
 mkdir /etc/snort/rules && \
 mkdir /etc/snort/rules/iplists && \
@@ -65,7 +65,7 @@ cp /root/snort_src/etc/*.map /etc/snort && \
 cp /root/snort_src/etc/*.dtd /etc/snort && \
 cp /root/snort_src/src/dynamic-preprocessors/build/usr/local/lib/snort_dynamicpreprocessor/* /usr/local/lib/snort_dynamicpreprocessor/
 
-# Install Pulledpork
+# Pulledpork Install
 cp /root/pulledpork_src/pulledpork.pl /usr/local/bin && \
 chmod +x /usr/local/bin/pulledpork.pl &&\
 cp /root/pulledpork_src/etc/*.conf /etc/snort &&\
