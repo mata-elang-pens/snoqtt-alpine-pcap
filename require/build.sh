@@ -11,7 +11,7 @@ pip3 install --no-cache-dir -r /root/requirements.txt
 mkdir -p /root/snort_src && mkdir -p /root/daq_src && mkdir -p /root/pulledpork_src
 
 # Snort download
-wget https://www.snort.org/downloads/snort/snort-2.9.14.1.tar.gz -O /root/snort.tar.gz &&\
+wget https://www.snort.org/downloads/snort/snort-2.9.15.1.tar.gz -O /root/snort.tar.gz &&\
 tar -xvzf /root/snort.tar.gz --strip-components=1 -C /root/snort_src &&\
 rm /root/snort.tar.gz
 
