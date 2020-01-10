@@ -24,15 +24,10 @@ services:
         target: /mosquitto/log/mosquitto.log
 
   snort-sensor:
-    build:
-      context: ./
-      args:
-        PROTECTED_SUBNET: "${PROTECTED_SUBNET}"
-        EXTERNAL_SUBNET: "${EXTERNAL_SUBNET}"
-        OINKCODE: "${OINKCODE}"
-    # image: mataelang/snorqttalpine-sensor:latest
+    image: mataelang/snorqttalpine-sensor:latest
     hostname: snorqtt-sensor
     container_name: snorqtt-sensor
+    network_mode: host
     env_file:
       - ./.env
     ports:
