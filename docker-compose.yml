@@ -1,28 +1,6 @@
 version: '3.2'
 
-volumes:
-  mqtt_data:
-
 services:
-  mqtt-broker:
-    image: eclipse-mosquitto:latest
-    hostname: mqtt-broker
-    container_name: mqtt-broker
-    ports:
-      - "1883:1883"
-    volumes:
-      - type: bind
-        source: ./mosquitto.conf
-        target: /mosquitto/config/mosquitto.conf
-      - type: volume
-        source: mqtt_data
-        target: /mosquitto/data
-        volume:
-          nocopy: true
-      - type: bind
-        source: ./mosquitto.log
-        target: /mosquitto/log/mosquitto.log
-
   snort-sensor:
     image: mataelang/snorqttalpine-sensor:latest
     hostname: snorqtt-sensor
