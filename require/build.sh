@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Install required package
+apk update && \
+apk add --no-cache perl-net-ssleay perl-crypt-ssleay perl-libwww perl-lwp-useragent-determined perl-lwp-protocol-https pcre libpcap libdnet libtirpc libressl zlib perl supervisor bash && \
+apk add --no-cache build-base alpine-sdk linux-headers libpcap-dev libdnet-dev musl-dev pcre-dev bison flex net-tools wget zlib-dev python3-dev sed tar libtirpc-dev libressl-dev cmake make g++
+
 # Symlink libtirpc
 ln -s /usr/include/tirpc/rpc /usr/include/rpc && ln -s /usr/include/tirpc/netconfig.h /usr/include/netconfig.h
 
@@ -19,11 +24,6 @@ rm /root/snort.tar.gz
 wget https://www.snort.org/downloads/snort/daq-2.0.6.tar.gz -O /root/daq.tar.gz &&\
 tar -xvzf /root/daq.tar.gz --strip-components=1 -C /root/daq_src && \
 rm /root/daq.tar.gz
-
-# Pulledpork download
-wget https://github.com/mata-elang-pens/pulledpork/archive/v0.7.3.tar.gz -O /root/pulledpork.tar.gz &&\
-tar -xvzf /root/pulledpork.tar.gz --strip-components=1 -C /root/pulledpork_src &&\
-rm /root/pulledpork.tar.gz
 
 # Compile DAQ source code
 cd /root/daq_src && \
@@ -65,11 +65,15 @@ cp /root/snort_src/etc/*.map /etc/snort && \
 cp /root/snort_src/etc/*.dtd /etc/snort && \
 cp /root/snort_src/src/dynamic-preprocessors/build/usr/local/lib/snort_dynamicpreprocessor/* /usr/local/lib/snort_dynamicpreprocessor/
 
-# Pulledpork Install
+# Install pulledpork
+wget https://github.com/mata-elang-pens/pulledpork/archive/v0.7.3.tar.gz -O /root/pulledpork.tar.gz &&\
+tar -xvzf /root/pulledpork.tar.gz --strip-components=1 -C /root/pulledpork_src &&\
+rm /root/pulledpork.tar.gz && \
 cp /root/pulledpork_src/pulledpork.pl /usr/local/bin && \
 chmod +x /usr/local/bin/pulledpork.pl &&\
 cp /root/pulledpork_src/etc/*.conf /etc/snort &&\
-cp /root/pulledpork.conf /etc/snort
+mv /root/pulledpork.conf /etc/snort/
 
 # Cleaning up
 rm -rf /root/snort_src /root/daq_src /root/pulledpork_src /root/requirements.txt /root/build.sh
+apk del build-base alpine-sdk linux-headers libpcap-dev libdnet-dev musl-dev pcre-dev bison flex net-tools wget zlib-dev python3-dev tar libtirpc-dev libressl-dev cmake make g++
