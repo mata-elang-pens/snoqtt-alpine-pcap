@@ -12,9 +12,15 @@ sed -i \
 -e 's@^\(include $.*\)@# \1@' \
 -e 's@\# include \$RULE\_PATH\/local\.rules@include \/etc\/snort\/rules\/local\.rules@' \
 -e '/include \/etc\/snort\/rules\/local\.rules/a include \/etc\/snort\/rules\/snort\.rules' \
-/etc/snort/snort.conf && \
-/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l && \
-snort -T -c /etc/snort/snort.conf &&\
+/etc/snort/snort.conf
+
+# Setup Rule using pulledpork
+/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l
+
+# Verify Snort configurations and rules
+snort -T -c /etc/snort/snort.conf
+
+# Change import to use snortunsock.alert on snort listener
 sed -i '/import alert/c\import snortunsock.alert as alert' /usr/lib/python3.7/site-packages/snortunsock/snort_listener.py
 
 # Cleaning temporary
