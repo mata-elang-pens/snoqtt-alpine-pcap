@@ -10,15 +10,15 @@ sed -i \
 -e 's@^var WHITE_LIST_PATH.*@var WHITE_LIST_PATH /etc/snort/rules/iplists@' \
 -e 's@^var BLACK_LIST_PATH.*@var BLACK_LIST_PATH /etc/snort/rules/iplists@' \
 -e 's@^\(include $.*\)@# \1@' \
--e 's@\# include \$RULE\_PATH\/local\.rules@include \$RULE\_PATH\/local\.rules@' \
--e '/include \$RULE\_PATH\/local\.rules/a include \$RULE\_PATH\/snort\.rules' \
-/etc/snort/snort.conf
-
-# Setup pulledpork
-sed -i 's@.oinkcode.@'"${OINKCODE}"'@' /etc/snort/pulledpork.conf &&\
-/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l &&\
+-e 's@\# include \$RULE\_PATH\/local\.rules@include \/etc\/snort\/rules\/local\.rules@' \
+-e '/include \/etc\/snort\/rules\/local\.rules/a include \/etc\/snort\/rules\/snort\.rules' \
+/etc/snort/snort.conf && \
+/usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf -l && \
 snort -T -c /etc/snort/snort.conf &&\
 sed -i '/import alert/c\import snortunsock.alert as alert' /usr/lib/python3.7/site-packages/snortunsock/snort_listener.py
+
+# Cleaning temporary
+rm -rf /tmp/snort/*
 
 # Start service
 /usr/bin/supervisord -c /root/libs/super_snort.conf
